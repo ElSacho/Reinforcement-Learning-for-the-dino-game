@@ -10,6 +10,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+print(1)
 
 HIDDEN_SIZE = 128
 BATCH_SIZE = 16
