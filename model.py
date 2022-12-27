@@ -13,7 +13,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 HIDDEN_SIZE = 128
-BATCH_SIZE = 16
+BATCH_SIZE = 100
 PERCENTILE = 70
 
 class Net(nn.Module):
@@ -22,7 +22,9 @@ class Net(nn.Module):
         self.net = nn.Sequential(
             nn.Linear(obs_size, hidden_size),
             nn.ReLU(),
-            nn.Linear(hidden_size, n_actions)
+            nn.Linear(hidden_size, 56),
+            nn.ReLU(),
+            nn.Linear(56, n_actions)
         )
 
     def forward(self, x):
@@ -42,13 +44,16 @@ def iterate_batches(env, net, batch_size):
         act_probs_v = sm(net(obs_v))
         act_probs = act_probs_v.data.numpy()
         action = np.random.choice(len(act_probs), p=act_probs)
+        # print(f'action : {action}')
         next_obs, reward, is_done = env.step(action)
         episode_reward += reward
+        # print(f'episode_reward : {episode_reward}')
         step = EpisodeStep(observation=obs, action=action)
         episode_steps.append(step)
         if is_done:
             e = Episode(reward=episode_reward, steps=episode_steps)
             batch.append(e)
+            # print(episode_reward)
             episode_reward = 0.0
             episode_steps = []
             next_obs = env.reset()

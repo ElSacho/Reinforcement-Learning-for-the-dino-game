@@ -78,17 +78,18 @@ class dinoEnv:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-
+        scoreIni = self.score
         self.player._movePlayer(action) 
         self.obstacles._moveObstacles(self.vitesse)
         gameOver = self.player.isCollision(self.obstacles, self)
         self.obstacles.generateObstacle(self.vitesse)
         self.updateVitesse()  
         self._update_ui()
-        self.clock.tick(SPEED)
-        reward = 1
+      #  self.clock.tick(SPEED)
+        scoreFinal = self.score
+        reward = scoreFinal * (scoreFinal - scoreIni)
         if gameOver:
-            reward = -10
+            reward = - 100
         obs = np.array(self.get_obs())
         
         return obs, reward, gameOver    
@@ -128,6 +129,6 @@ class dinoEnv:
                 Dmur = obstacle2.obs[0].x / self.w
                 Dpont = obstacle1.obs[0].x / self.w
             Gap = ( obstacle2.obs[0].x - obstacle1.obs[0].x ) / self.w
-        Ypos = self.player.y
+        Ypos = self.player.y  / self.h
         return [speed, Ypos, Gap, Dmur, Dpont]
 
