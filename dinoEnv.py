@@ -42,6 +42,7 @@ class dinoEnv:
         self.player = Player.Player(self.leftMargin, self.bottumMargin)
         self.score=0
         self.vitesse=5
+        # TODO : return les obs sous forme [xx, xx, xx, xx]
     
     def updateVitesse(self):
         if self.vitesse < 50:
@@ -86,5 +87,8 @@ class dinoEnv:
         return reward, gameOver, self.score
     
     def step(self, action):
+        pass
+    
+    def get_obs(self):
         pass
 
