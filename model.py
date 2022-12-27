@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 from tensorboardX import SummaryWriter
 import dinoEnv
+import dinoEnvWithoutDisplay
 
 import torch
 import torch.nn as nn
@@ -38,7 +39,6 @@ def iterate_batches(env, net, batch_size):
     sm = nn.Softmax(dim=-1)
     while True:
         obs_v = torch.FloatTensor(obs)
-        print(obs_v)
         act_probs_v = sm(net(obs_v))
         act_probs = act_probs_v.data.numpy()
         action = np.random.choice(len(act_probs), p=act_probs)
@@ -76,7 +76,8 @@ def filter_batch(batch, percentile):
 
 
 if __name__ == "__main__":
-    env = dinoEnv.dinoEnv()
+    # env = dinoEnv.dinoEnv()
+    env = dinoEnvWithoutDisplay.dinoEnvWithoutDisplay()
     obs_size = env.observation_space
     n_actions = env.action_space
     net = Net(obs_size, HIDDEN_SIZE, n_actions)
@@ -98,7 +99,7 @@ if __name__ == "__main__":
         writer.add_scalar("loss", loss_v.item(), iter_no)
         writer.add_scalar("reward_bound", reward_b, iter_no)
         writer.add_scalar("reward_mean", reward_m, iter_no)
-        if reward_m > 60:
+        if reward_m > 1000:
             print("Solved!")
             break
     writer.close()
