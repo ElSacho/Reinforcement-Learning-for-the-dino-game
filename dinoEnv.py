@@ -7,6 +7,7 @@ from enum import Enum
 from collections import namedtuple
 import Obstacles
 import Player
+import numpy as np
 
 pygame.init()
 font = pygame.font.Font('arial.ttf', 25)
@@ -26,7 +27,7 @@ SPEED = 25
 
 
 class dinoEnv:
-    def __init__(self, width=680, height=420, leftMargin=20, bottumMargin=400):
+    def __init__(self, width=680, height=420, leftMargin=20, bottumMargin=400, maxSpeed=50):
         self.w = width
         self.h = height
         self.leftMargin=leftMargin
@@ -34,7 +35,15 @@ class dinoEnv:
         self.display = pygame.display.set_mode((self.w, self.h))
         pygame.display.set_caption('Dino')
         self.clock = pygame.time.Clock()
-        self.reset()
+        self.maxSpeed = maxSpeed
+        self.resetIni()
+        
+    def resetIni(self):
+        self.sol=[Point(k*BLOCK_SIZE, self.bottumMargin+BLOCK_SIZE) for k in range(self.w//BLOCK_SIZE)]
+        self.obstacles = Obstacles.Obstacles(self.w, self.bottumMargin)
+        self.player = Player.Player(self.leftMargin, self.bottumMargin)
+        self.score=0
+        self.vitesse=5
         
     def reset(self):
         self.sol=[Point(k*BLOCK_SIZE, self.bottumMargin+BLOCK_SIZE) for k in range(self.w//BLOCK_SIZE)]
@@ -42,16 +51,15 @@ class dinoEnv:
         self.player = Player.Player(self.leftMargin, self.bottumMargin)
         self.score=0
         self.vitesse=5
-        # TODO : return les obs sous forme [xx, xx, xx, xx]
+        return self.get_obs()
     
     def updateVitesse(self):
-        if self.vitesse < 50:
+        if self.vitesse < self.maxSpeed :
             self.vitesse+=0.01
     
     def drawSol(self):
         for pt in self.sol:
             pygame.draw.rect(self.display, BLACK, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
-        
         
     def _update_ui(self):
         self.display.fill(WHITE)
@@ -76,19 +84,48 @@ class dinoEnv:
         self.obstacles._moveObstacles(self.vitesse)
         gameOver = self.player.isCollision(self.obstacles, self)
         self.obstacles.generateObstacle(self.vitesse)
-        self.updateVitesse()
-                  
+        self.updateVitesse()  
         self._update_ui()
         self.clock.tick(SPEED)
-        reward = 2
+        reward = 1
         if gameOver:
-            reward=-10
+            reward = -10
+        obs = np.array(self.get_obs())
         
-        return reward, gameOver, self.score
-    
-    def step(self, action):
-        pass
+        return obs, reward, gameOver        
     
     def get_obs(self):
-        pass
+        speed = self.vitesse / self.maxSpeed
+        if len(self.obstacles.obstacles) == 0:
+            Dmur = 1
+            Dpont = 1
+            Gap = 1
+        elif len(self.obstacles.obstacles) == 1:
+            obstacle = self.obstacles.obstacles[0]
+            Gap = 1
+            if obstacle.type == 1:
+                Dmur = obstacle.obs[0].x / self.w
+                Dpont = 1
+            else : 
+                Dmur = 1
+                Dpont = obstacle.obs[0].x / self.w
+            Gap = 1
+        else :
+            obstacle1 = self.obstacles.obstacles[0]
+            obstacle2 = self.obstacles.obstacles[1]
+            if obstacle1.type == 1 and obstacle2.type == 1:
+                Dmur = obstacle1.obs[0].x / self.w
+                Dpont = 1
+            elif obstacle1.type == 2 and obstacle2.type == 2:
+                Dmur = 1
+                Dpont = obstacle1.obs[0].x / self.w
+            elif obstacle1.type == 1 and obstacle2.type == 2:
+                Dmur = obstacle1.obs[0].x / self.w
+                Dpont = obstacle2.obs[0].x / self.w
+            else :
+                Dmur = obstacle2.obs[0].x / self.w
+                Dpont = obstacle1.obs[0].x / self.w
+            Gap = ( obstacle2.obs[0].x - obstacle1.obs[0].x ) / self.w
+        Ypos = self.y
+        return [speed, Ypos, Gap, Dmur, Dpont]
 

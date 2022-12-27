@@ -20,6 +20,18 @@ SPEED = 25
 
 
 class Player:
+    
+    def __init__(self, leftMargin, bottumMargin):
+        self.x = leftMargin+4*BLOCK_SIZE
+        self.y = bottumMargin
+        self.sol = bottumMargin
+        self.isBaissing = False
+        self.isSauting = False
+        self.taille=0
+        self.t=0
+        self.pt = [Point(self.x,self.y-j*BLOCK_SIZE) for j in range(3)]
+    
+    
     def _movePlayer(self, action):
         # action = [petit Saut, grand saut, se baisser, ne rien faire]
         if self.isSauting == False:
@@ -49,16 +61,6 @@ class Player:
     def _goUp(self):
         self.pt = [Point(self.x,self.y-j*BLOCK_SIZE) for j in range(3)]
         self.isBaissing=False
-    
-    def __init__(self, leftMargin, bottumMargin):
-        self.x = leftMargin+4*BLOCK_SIZE
-        self.y = bottumMargin
-        self.sol = bottumMargin
-        self.isBaissing = False
-        self.isSauting = False
-        self.taille=0
-        self.t=0
-        self.pt = [Point(self.x,self.y-j*BLOCK_SIZE) for j in range(3)]
         
     def drawPlayer(self, game):
         for pnt in self.pt:

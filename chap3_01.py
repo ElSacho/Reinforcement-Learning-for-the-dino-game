@@ -47,6 +47,8 @@ def iterate_batches(env, net, batch_size):
         act_probs_v = sm(net(obs_v))
         act_probs = act_probs_v.data.numpy()
         action = np.random.choice(len(act_probs), p=act_probs)
+        print(env.step(action))
+        break
         next_obs, reward, is_done, _, _ = env.step(action)
         episode_reward += reward
         step = EpisodeStep(observation=obs, action=action)
