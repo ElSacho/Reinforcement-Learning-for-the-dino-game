@@ -10,9 +10,8 @@ import Player
 import numpy as np
 
 pygame.init()
-font = pygame.font.Font('arial.ttf', 25)
+font = pygame.font.Font('Reinforcement-Learning-for-the-dino-game/arial.ttf', 25)
 
-    
 Point = namedtuple('Point', 'x, y')
 # rgb colors
 WHITE = (255, 255, 255)
@@ -24,8 +23,6 @@ BLACK = (0,0,0)
 BLOCK_SIZE = 20
 SPEED = 25
 
-
-
 class dinoEnv:
     def __init__(self, width=680, height=420, leftMargin=20, bottumMargin=400, maxSpeed=50):
         self.w = width
@@ -36,6 +33,8 @@ class dinoEnv:
         pygame.display.set_caption('Dino')
         self.clock = pygame.time.Clock()
         self.maxSpeed = maxSpeed
+        self.observation_space = 5
+        self.action_space = 4
         self.resetIni()
         
     def resetIni(self):
@@ -92,7 +91,10 @@ class dinoEnv:
             reward = -10
         obs = np.array(self.get_obs())
         
-        return obs, reward, gameOver        
+        return obs, reward, gameOver    
+    
+    def step(self, action):
+        return self.play_step(action)
     
     def get_obs(self):
         speed = self.vitesse / self.maxSpeed
@@ -126,6 +128,6 @@ class dinoEnv:
                 Dmur = obstacle2.obs[0].x / self.w
                 Dpont = obstacle1.obs[0].x / self.w
             Gap = ( obstacle2.obs[0].x - obstacle1.obs[0].x ) / self.w
-        Ypos = self.y
+        Ypos = self.player.y
         return [speed, Ypos, Gap, Dmur, Dpont]
 

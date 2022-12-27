@@ -35,13 +35,13 @@ class Player:
     def _movePlayer(self, action):
         # action = [petit Saut, grand saut, se baisser, ne rien faire]
         if self.isSauting == False:
-            if np.array_equal(action, [1,0,0,0]):
+            if action ==  2 :
                 self.isSauting=True
                 self.taille=1
-            if np.array_equal(action, [0,1,0,0]):
+            if action ==  3 :
                 self.isSauting=True
                 self.taille=2
-            if np.array_equal(action, [0,0,1,0]):
+            if action ==  0 :
                 if self.taille not in [1,2]:
                     self.taille=-1
 
@@ -52,8 +52,6 @@ class Player:
         if self.isSauting == False and self.taille==-1:
             self._goDown()
             
-        
-    
     def _goDown(self):
         self.pt = [Point(self.x,self.y) ]
         self.isBaissing=True
@@ -100,7 +98,6 @@ class Player:
                         return True
             if obstacle.obs[0].x + BLOCK_SIZE < self.x:
                 game.score+=1
-                print(game.score)
                 obstacles.obstacles.remove(obstacle)
 
             return False
