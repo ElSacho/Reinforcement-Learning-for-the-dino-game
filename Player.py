@@ -86,7 +86,7 @@ class Player:
         gameOver=False
         for obstacle in obstacles.obstacles:
             if obstacle.obs[0].x > self.x+BLOCK_SIZE:
-                break
+                return False
             # Si l'obstacle est à la meme abscisse que notre player, on compare les ordonnées 
             if obstacle.obs[0].x + BLOCK_SIZE >= self.x:
                 if obstacle.type==1:
@@ -101,3 +101,4 @@ class Player:
                 obstacles.obstacles.remove(obstacle)
 
             return False
+        return False

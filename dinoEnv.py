@@ -71,6 +71,9 @@ class dinoEnv:
         text = font.render("Score: " + str(self.score), True, BLACK)
         self.display.blit(text, [0, 0])
         pygame.display.flip()
+        
+    def sampleAction(self):
+        return random.randint(0, self.action_space-1)
     
     def play_step(self, action):
          # 1. collect user input
@@ -87,9 +90,9 @@ class dinoEnv:
         self._update_ui()
       #  self.clock.tick(SPEED)
         scoreFinal = self.score
-        reward = scoreFinal * (scoreFinal - scoreIni)
+        reward = (scoreFinal - scoreIni)
         if gameOver:
-            reward = - 100
+            reward = 0
         obs = np.array(self.get_obs())
         
         return obs, reward, gameOver    

@@ -54,6 +54,9 @@ class dinoEnvWithoutDisplay:
         if self.vitesse < self.maxSpeed :
             self.vitesse+=0.01
 
+    def sampleAction(self):
+        return random.randint(0, self.action_space-1)
+
     def play_step(self, action):
          # 1. collect user input
         for event in pygame.event.get():
@@ -68,9 +71,9 @@ class dinoEnvWithoutDisplay:
         self.updateVitesse()  
        # self.clock.tick(SPEED)
         scoreFinal = self.score
-        reward = scoreFinal * (scoreFinal - scoreIni)
+        reward = (scoreFinal - scoreIni)
         if gameOver:
-            reward = - 100
+            reward = 0
         obs = np.array(self.get_obs())
         
         return obs, reward, gameOver    
