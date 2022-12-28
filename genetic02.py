@@ -100,12 +100,14 @@ class Agents():
 obs_size = 5
 hidden_size = 128
 n_actions = 4
-n_agents = 10
-# env = dinoEnvWithoutDisplay.dinoEnvWithoutDisplay()
-env = dinoEnv.dinoEnv()
+n_agents = 100
+env = dinoEnvWithoutDisplay.dinoEnvWithoutDisplay()
+# env = dinoEnv.dinoEnv()
 agents = Agents(obs_size, hidden_size, n_actions, n_agents)  
 
-for i in range(100):
+while True:
     agents.playAllAgents(env)
     agents.updateAgents()
-    print(np.max(agents.rewards[i]))
+    print(np.max(agents.rewards), np.mean(agents.rewards[:25]))
+    if np.max(agents.rewards) > 60:
+        break
