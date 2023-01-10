@@ -56,7 +56,7 @@ class Agents:
                 self.agents[i].isDead = False
     
 class Agent:
-    def __init__(self, network, leftMargin, bottumMargin):
+    def __init__(self, network, leftMargin=20, bottumMargin=400):
         self.network = network
         self.isDead = False
         self.score = 0
@@ -71,12 +71,9 @@ class Agent:
         gameOver = self.game.play_step(action)
         self.score += 1
         self.isDead = gameOver
-        
-    def get_obs(self, env):
-        pass
-        
     
-
+    def get_action(self, obs):
+        return self.network.feedForward(obs)
     
 
     

@@ -6,10 +6,11 @@ import dinoEnv
 import dinoEnvWithoutDisplay
 
 # RL Gym
-env = dinoEnvWithoutDisplay.dinoEnvWithoutDisplay()
+# env = dinoEnvWithoutDisplay.dinoEnvWithoutDisplay()
+env = dinoEnv.dinoEnv()
 
 # Initialisation
-n = 100  # number of candidate policies
+n = 50  # number of candidate policies
 top_k = 0.10  # top % selected for next iteration
 mean = np.zeros((5,4))  # shape = (n_parameters, n_actions)
 stddev = np.ones((5,4))  # shape = (n_parameters, n_actions)
